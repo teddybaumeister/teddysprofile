@@ -1,1 +1,371 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Hockey Profile</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .profile {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px 15px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .avatar-container {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      filter: sepia(65%) saturate(130%) hue-rotate(5deg);
+      cursor: pointer;
+      border: 2px solid #333;
+    }
+
+    .change-photo {
+      position: absolute;
+      right: -3px;
+      bottom: 0;
+      background: #333;
+      border: 1px solid #777;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .username {
+      font-size: 12px;
+      font-weight: 400;
+      margin-bottom: 18px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .stat span {
+      font-size: 12px;
+      color: #ccc;
+    }
+
+    .bio {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 18px 0;
+      white-space: pre-line;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #333;
+      margin-top: 22px;
+    }
+
+    .tab {
+      flex: 1;
+      background: none;
+      color: #888;
+      border: none;
+      padding: 14px 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab.active {
+      color: white;
+      border-bottom: 2px solid white;
+    }
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      margin-top: 3px;
+    }
+
+    .post {
+      aspect-ratio: 3 / 4;
+      background: #191919;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .post img,
+    .post video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .post-placeholder {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 13px;
+      background: linear-gradient(145deg, #292929, #111);
+    }
+
+    .repost-button {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: #8b35e8;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 7px 10px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .repost-button:hover {
+      background: #a65cff;
+    }
+
+    .repost-label {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #222;
+      padding: 4px 6px;
+      border-radius: 5px;
+      font-size: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Enlarged profile picture */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .modal img {
+      max-width: 85vw;
+      max-height: 80vh;
+      border-radius: 10px;
+      filter: sepia(65%) saturate(130%) hue-rotate(5deg);
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      color: white;
+      font-size: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 400px) {
+      .avatar-container,
+      .avatar {
+        width: 75px;
+        height: 75px;
+      }
+
+      .top {
+        gap: 10px;
+      }
+
+      .stat strong {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="profile">
+
+    <section class="top">
+      <div class="avatar-container">
+        <!-- Replace this image with your hockey photo -->
+        <img
+          id="profilePicture"
+          class="avatar"
+          src="https://placehold.co/300x300/333333/ffffff?text=HOCKEY"
+          alt="Hockey profile picture"
+        >
+
+        <button class="change-photo"
+          onclick="document.getElementById('photoUpload').click()"
+          aria-label="Change profile photo">✎</button>
+
+        <input type="file" id="photoUpload"
+          accept="image/*" hidden>
+      </div>
+
+      <div class="details">
+        <div class="username" id="username">@yourusername</div>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="postCount">6</strong>
+            <span>Posts</span>
+          </div>
+          <div class="stat">
+            <strong>700</strong>
+            <span>Followers</span>
+          </div>
+          <div class="stat">
+            <strong>1,000</strong>
+            <span>Following</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="bio" id="bio">
+Hockey 🏒
+Living for the game
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('posts', this)">
+        ▦ Posts
+      </button>
+      <button class="tab" onclick="showTab('reposts', this)">
+        ↻ Reposts
+      </button>
+    </div>
+
+    <!-- Posts grid -->
+    <section id="posts" class="post-grid">
+      <div class="post">
+        <div class="post-placeholder">🏒 Hockey</div>
+      </div>
+      <div class="post">
+        <div class="post-placeholder">🥅 Game day</div>
+      </div>
+      <div class="post">
+        <div class="post-placeholder">🏆 Highlights</div>
+      </div>
+      <div class="post">
+        <div class="post-placeholder">⛸️ Practice</div>
+      </div>
+      <div class="post">
+        <div class="post-placeholder">🏒 On the ice</div>
+      </div>
+      <div class="post">
+        <div class="post-placeholder">🔥 Hockey life</div>
+      </div>
+    </section>
+
+    <!-- Reposts grid -->
+    <section id="reposts" class="post-grid hidden">
+      <div class="post">
+        <div class="post-placeholder">Reposted reels appear here</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Profile picture popup -->
+  <div class="modal" id="pictureModal"
+       onclick="closePicture()">
+    <button class="close-modal"
+      onclick="closePicture()"
+      aria-label="Close">×</button>
+    <img id="largePicture" src="" alt="Enlarged profile picture">
+  </div>
+
+  <script>
+    const profilePicture = document.getElementById("profilePicture");
+    const photoUpload = document.getElementById("photoUpload");
+
+    // Enlarge profile picture when clicked
+    profilePicture.addEventListener("click", function () {
+      document.getElementById("largePicture").src = this.src;
+      document.getElementById("pictureModal").classList.add("open");
+    });
+
+    function closePicture() {
+      document.getElementById("pictureModal").classList.remove("open");
+    }
+
+    // Change profile picture
+    photoUpload.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+
+      if (file && file.type.startsWith("image/")) {
+        profilePicture.src = URL.createObjectURL(file);
+      }
+    });
+
+    // Switch between Posts and Reposts
+    function showTab(tabName, button) {
+      document.getElementById("posts").classList.add("hidden");
+      document.getElementById("reposts").classList.add("hidden");
+
+      document.getElementById(tabName).classList.remove("hidden");
+
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
+
+    // Escape key closes enlarged photo
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closePicture();
+    });
+  </script>
+</body>
+</html>
